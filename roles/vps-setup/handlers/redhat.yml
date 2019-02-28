@@ -1,0 +1,5 @@
+---
+# handlers file for redhat family
+
+- name: Restart SSH
+  service: name=sshd state=restarted

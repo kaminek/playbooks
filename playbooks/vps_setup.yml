@@ -1,0 +1,36 @@
+---
+
+- name: Setup a target VPS with my personal secure configuration
+  hosts: vps
+  gather_facts: no # done below
+  vars_prompt:
+    - name: root_pwd
+      prompt: "Provide root password"
+      private: yes
+      confirm: yes
+      when: root_pwd is null
+    - name: ssh_user_name
+      prompt: "Provide ssh user name"
+      private: no
+      when: ssh_user_name is null
+    - name: ssh_user_pwd
+      prompt: "Provide ssh user password"
+      confirm: yes
+      when: ssh_user_pwd is null
+    - name: ssh_port
+      prompt: "Provide ssh port to use"
+      private: no
+      when: ssh_port is null
+  pre_tasks: # some distribs are not shipped with python
+    - raw: >
+        test -e /usr/bin/python ||
+        (yum -y update && yum install -y python)
+      ignore_errors: true
+    - name: Gathering Facts
+      setup: #aka gather_facts
+  roles:
+    - role: vps-setup
+      vars:
+        - ansible_python_interpreter: "/usr/bin/env python3"
+        - ansible_user: root
+        - ansible_port: 22

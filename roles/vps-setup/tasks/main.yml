@@ -1,0 +1,31 @@
+---
+# tasks file for roles/vps-setup
+
+# python, libselinux-python
+
+- name: Set OS dependent variables
+  include_vars: '{{ item }}'
+  with_first_found:
+   - '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_distribution }}.yml'
+   - '{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_os_family }}.yml'
+
+- name: Firewall setup for Debian family
+  include_tasks: firewall-debian.yml
+  when: ansible_os_family == "Debian"
+  tags:
+    - iptables
+
+- name: Firewall setup for RedHat family
+  include_tasks: firewall-redhat.yml
+  when: ansible_os_family == "RedHat"
+  tags:
+    - iptables
+
+- name: SSH setup
+  include_tasks: ssh-setup.yml
+  notify: # not working
+    - Restart SSH
+  tags:
+    - ssh_config

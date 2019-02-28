@@ -1,0 +1,6 @@
+---
+# handlers file for debian family
+
+- name: Restart SSH
+  service: name=ssh state=restarted
+
