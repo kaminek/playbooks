@@ -1,8 +1,8 @@
+# Setup for the first time
+first_time_setup: true
+
 # true if IPv6 is needed
 network_ipv6_enable: false              # sshd + ssh
-
-# true if sshd should be started and enabled
-ssh_server_enabled: true               # sshd
 
 # true if DNS resolutions are needed, look up the remote host name, defaults to false from 6.8, see: http://www.openssh.com/txt/release-6.8
 ssh_use_dns: false                      # sshd
@@ -16,7 +16,6 @@ ssh_server_hardening: true          # sshd
 
 # If true, password login is allowed
 ssh_client_password_login: false          # ssh
-ssh_server_password_login: false          # sshd
 
 # ports on which ssh-server should listen
 ssh_server_ports: ['22']      # sshd
@@ -61,23 +60,11 @@ ssh_gateway_ports: false                # sshd
 # false to disable Agent Forwarding. Set to true to allow Agent Forwarding.
 ssh_allow_agent_forwarding: false       # sshd
 
-# true if SSH has PAM support
-ssh_pam_support: true
-
 # false to disable pam authentication.
 ssh_use_pam: false      # sshd
 
-# false to disable google 2fa authentication
-ssh_google_auth: false # sshd
-
 # false to disable pam device 2FA input
 ssh_pam_device: false # sshd
-
-# true if SSH support GSSAPI
-ssh_gssapi_support: false
-
-# true if SSH support Kerberos
-ssh_kerberos_support: true
 
 # if specified, login is disallowed for user names that match one of the patterns.
 ssh_deny_users: ''      # sshd
@@ -128,7 +115,7 @@ ssh_print_motd: false      # sshd
 ssh_print_last_log: false    # sshd
 
 # false to disable serving /etc/ssh/banner.txt before authentication is allowed
-ssh_banner: false # sshd
+ssh_banner: true # sshd
 
 # false to disable distribution version leakage during initial protocol handshake
 ssh_print_debian_banner: false # sshd (Debian OS family only)
@@ -155,9 +142,6 @@ ssh_server_permit_environment_vars: false
 
 # maximum number of concurrent unauthenticated connections to the SSH daemon
 ssh_max_startups: '10:30:100'           # sshd
-
-ssh_ps53: 'yes'
-ssh_ps59: 'sandbox'
 
 ssh_macs: []
 ssh_ciphers: []
@@ -211,9 +195,6 @@ ssh_custom_selinux_dir: '/etc/selinux/local-policies'
 
 sshd_moduli_file: '/etc/ssh/moduli'
 sshd_moduli_minimum: 2048
-
-# disable ChallengeResponseAuthentication
-ssh_challengeresponseauthentication: false
 
 # a list of public keys that are never accepted by the ssh server
 ssh_server_revoked_keys: []

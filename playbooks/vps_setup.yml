@@ -21,16 +21,23 @@
       prompt: "Provide ssh port to use"
       private: no
       when: ssh_port is null
-  pre_tasks: # some distribs are not shipped with python
+  pre_tasks:
     - raw: >
-        test -e /usr/bin/python ||
-        (yum -y update && yum install -y python)
+        test -e /usr/bin/python3.7 ||
+        (yum -y update && yum install gcc openssl-devel bzip2-devel &&
+        wget -P /usr/src https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz &&
+        tar xzf /usr/src/Python-3.7.2.tgz &&
+        pushd /usr/src &&
+        ./configure --enable-optimizations &&
+        make altinstall)
       ignore_errors: true
     - name: Gathering Facts
-      setup: #aka gather_facts
+      setup:
+      tags: always
+  vars:
+    - ansible_python_interpreter: "/usr/bin/env python3"
   roles:
-    - role: vps-setup
+    - role: vps-ssh #vps-hardening
       vars:
-        - ansible_python_interpreter: "/usr/bin/env python3"
         - ansible_user: root
         - ansible_port: 22
