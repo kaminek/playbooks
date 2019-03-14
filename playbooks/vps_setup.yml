@@ -17,10 +17,6 @@
       prompt: "Provide ssh user password"
       confirm: yes
       when: ssh_user_pwd is null
-    - name: ssh_port
-      prompt: "Provide ssh port to use"
-      private: no
-      when: ssh_port is null
   pre_tasks:
     - raw: >
         test -e /usr/bin/python3.7 ||
