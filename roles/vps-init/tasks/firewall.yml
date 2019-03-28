@@ -1,0 +1,9 @@
+---
+
+- name: Firewall setup for Debian family
+  include_tasks: firewall-debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Firewall setup for RedHat family
+  include_tasks: firewall-redhat.yml
+  when: ansible_os_family == "RedHat"

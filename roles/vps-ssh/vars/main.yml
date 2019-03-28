@@ -1,7 +1,0 @@
----
-# vars file for roles/ssh-setup
-
-iptables_script: iptables-rules.sh
-iptables_restore_script: iptables-restore.sh
-ddos_extra_protection: False
-ssh_debug: False

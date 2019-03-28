@@ -1,0 +1,30 @@
+---
+
+- name: Install iptables rules saver
+  apt:
+    name: iptables-persistent
+    state: present
+    update_cache: yes
+
+- name: Copy iptables rules
+  template:
+    src: "{{ iptables_init }}.j2"
+    dest: "/tmp/{{ iptables_init }}"
+    mode: 0700
+
+- name: Enable netfilter persistent
+  service:
+    name: netfilter-persistent
+    state: started
+    enabled: yes
+
+- name: Apply iptables rules
+  shell: "/tmp/{{ iptables_init }}"
+
+- name: Save netfilter configuration
+  shell: "service netfilter-persistent save"
+
+- name: Remove iptables rules file
+  file:
+    path: "/tmp/{{ iptables_init }}"
+    state: absent

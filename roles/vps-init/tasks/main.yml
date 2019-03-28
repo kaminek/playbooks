@@ -1,0 +1,31 @@
+---
+# tasks file for roles/vps-ssh
+
+- name: Set OS dependent variables
+  include_vars: '{{ item }}'
+  ignore_errors: true
+  with_first_found:
+   - '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_distribution }}.yml'
+   - '{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_os_family }}.yml'
+  tags: always
+
+- name: include ssh setup tasks
+  include_tasks: ssh.yml
+
+- name: restart sshd
+  debug:
+    msg: Restarting sshd
+  changed_when: true # or use meta
+  notify: restart sshd
+  ignore_errors: true
+  tags: reset
+
+- name: Override ansible user/port after setting up sshd
+  set_fact:
+    ansible_port: "{{ ssh_server_port }}"
+    ansible_user: "{{ ssh_user_name }}"
+
+- name: include firewall setup tasks
+  include_tasks: firewall.yml

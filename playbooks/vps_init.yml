@@ -32,8 +32,7 @@
       tags: always
   vars:
     - ansible_python_interpreter: "/usr/bin/env python3"
+    - ansible_user: root
+    - ansible_port: 22
   roles:
-    - role: vps-ssh #vps-hardening
-      vars:
-        - ansible_user: root
-        - ansible_port: 22
+    - role: vps-init #vps-hardening

@@ -1,14 +1,5 @@
 ---
-# tasks file for roles/vps-ssh
-
-- name: Set OS dependent variables
-  include_vars: '{{ item }}'
-  ignore_errors: true
-  with_first_found:
-   - '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
-   - '{{ ansible_distribution }}.yml'
-   - '{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml'
-   - '{{ ansible_os_family }}.yml'
+# tasks file for ssh
 
 - name: install deps
   apt:
@@ -91,7 +82,6 @@
     owner: '{{ ssh_owner }}'
     group: '{{ ssh_group }}'
     validate: '/usr/sbin/sshd -T -f %s'
-  notify: restart sshd
   become: true
 
 - name: Update .ssh/config file
@@ -99,8 +89,8 @@
     {{ role_path }}/files/gen_ssh_config.sh {{ inventory_hostname }}
     {{ hostvars[inventory_hostname].ansible_host }} {{ ssh_user_name }}
     {{ ssh_server_port }}
+  when: ssh_update_config_file
   delegate_to: localhost
   become: false
   tags:
     - dbg
-

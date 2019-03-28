@@ -1,6 +1,9 @@
 # Setup for the first time
 first_time_setup: true
 
+# Update ~/.ssh/config file
+ssh_update_config_file: true
+
 # true if IPv6 is needed
 network_ipv6_enable: false              # sshd + ssh
 
@@ -208,3 +211,14 @@ ssh_custom_options: []
 
 # Custom options for SSH daemon configuration file
 sshd_custom_options: []
+
+## Firewall vars
+
+#
+iptables_init: iptables-rules.sh
+#
+iptables_restore_script: iptables-restore.sh
+# 
+ddos_extra_protection: False
+
+ssh_debug: False
