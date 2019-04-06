@@ -1,0 +1,7 @@
+[sshd]
+enabled = true
+port = {{ ssh_server_port }}
+filter = sshd
+banaction = route
+logpath = /var/log/auth.log
+maxretry = 2

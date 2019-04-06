@@ -1,0 +1,34 @@
+---
+
+- name: Install fail2ban
+  apt:
+    name: fail2ban
+    state: present
+  when: ansible_os_family == "Debian"
+  tags: fail2ban
+
+- name: Install fail2ban
+  yum:
+    name: fail2ban
+    state: present
+  when: ansible_os_family == "RedHat"
+  tags: fail2ban
+
+- name: Remove default fail2ban files in jail.d
+  file:
+    path: "/etc/fail2ban/jail.d"
+    state: absent
+  tags: fail2ban
+
+- name: Add jail.d dir
+  file:
+    path: "/etc/fail2ban/jail.d"
+    state: directory
+  tags: fail2ban
+
+- name: Add sshd jail configuration
+  template:
+    src: "{{ sshd_jail_config }}.j2"
+    dest: "/etc/fail2ban/jail.d/sshd.conf"
+  notify: restart fail2ban
+  tags: fail2ban

@@ -29,3 +29,7 @@
 
 - name: include firewall setup tasks
   include_tasks: firewall.yml
+
+- name: include Fail2ban setup tasks
+  include_tasks: fail2ban.yml
+  tags: fail2ban
