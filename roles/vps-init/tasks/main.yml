@@ -40,9 +40,11 @@
     ansible_port: "{{ ssh_server_port }}"
     ansible_user: "{{ ssh_user_name }}"
 
-- name: include firewall setup tasks
-  include_tasks: firewall.yml
+- block:
+  - name: include firewall setup tasks
+    include_tasks: firewall.yml
 
-- name: include Fail2ban setup tasks
-  include_tasks: fail2ban.yml
-  tags: fail2ban
+  - name: include Fail2ban setup tasks
+    include_tasks: fail2ban.yml
+    tags: fail2ban
+  become: True
