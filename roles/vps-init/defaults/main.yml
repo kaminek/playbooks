@@ -217,8 +217,6 @@ sshd_custom_options: []
 
 #
 iptables_init: iptables-rules.sh
-#
-iptables_restore_script: iptables-restore.sh
 # 
 ddos_extra_protection: False
 

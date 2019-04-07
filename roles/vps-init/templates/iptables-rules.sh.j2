@@ -42,18 +42,18 @@ ${IPTABLES} -A INPUT -p tcp -m connlimit --connlimit-above 80 -j REJECT --reject
 # Block fragmented packets
 ${IPTABLES} -t mangle -A PREROUTING -f -j DROP
 
+# Allow min traffic
 ${IPTABLES} -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-${IPTABLES} -A INPUT -i lo -j ACCEPT
-${IPTABLES} -A OUTPUT -o lo -j ACCEPT
-${IPTABLES} -A INPUT -p tcp --dport {{ ssh_server_port }} -m state --state NEW -j ACCEPT
 ${IPTABLES} -A INPUT -p icmp --icmp-type 8 -j ACCEPT
+${IPTABLES} -A INPUT -i lo -j ACCEPT
+${IPTABLES} -A INPUT -p tcp --dport {{ ssh_server_port }} -m state --state NEW -j ACCEPT
 
 # Set a default policy main chains
 ${IPTABLES} -P INPUT DROP
 ${IPTABLES} -P FORWARD DROP
 ${IPTABLES} -P OUTPUT ACCEPT
 
-#IPv6
+## IPv6
 
 # Flush everything
 ${IP6TABLES} -X
@@ -61,6 +61,23 @@ ${IP6TABLES} -F
 
 # Accept all ICMP v6 packets
 ${IP6TABLES} -A INPUT -p ipv6-icmp -j ACCEPT
+
+# Must allow loopback interface
+${IP6TABLES}  -A INPUT -i lo -j ACCEPT
+
+# Allow return connections initiated from the host
+${IP6TABLES}  -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+## Allow connections from SSH clients
+#${IP6TABLES}  -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+#
+## Allow HTTP and HTTPS traffic
+#${IP6TABLES}  -A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+#${IP6TABLES}  -A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+#
+## Allow access to SMTP, POP3, and IMAP
+#${IP6TABLES}  -A INPUT -m state --state NEW -p tcp -m multiport \
+#--dport 25,110,143 -j ACCEPT
 
 # Set a default policy main chains
 ${IP6TABLES} -P INPUT DROP
