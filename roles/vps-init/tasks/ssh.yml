@@ -1,14 +1,6 @@
 ---
 # tasks file for ssh
 
-- name: install deps
-  apt:
-    name: sudo
-    state: present
-    update_cache: yes
-    dpkg_options: 'force-confask,force-confnew,force-confmiss'
-  when: ansible_os_family == "Debian"
-
 - name: change root password
   user:
     name: root

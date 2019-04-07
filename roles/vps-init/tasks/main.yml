@@ -11,8 +11,21 @@
    - '{{ ansible_os_family }}.yml'
   tags: always
 
+- name: Unminimize image
+  block:
+    - name: copy unminimize script
+      copy:
+        src: ubuntu-unminimize.sh
+        dest: /usr/local/sbin/unminimize
+        mode: 0775
+    - name: unminimize image
+      shell: unminimize
+  when: ansible_distribution == "Ubuntu" and inventory_hostname in groups['scw']
+  tags: min
+
 - name: include ssh setup tasks
   include_tasks: ssh.yml
+  tags: ssh
 
 # XXX: Hack to restart ssh without loosing connection
 - name: Restart sshd
