@@ -1,0 +1,10 @@
+---
+
+- name: Setup multipoint VPN between all VPS
+  hosts: vps
+  gather_facts: yes
+  vars:
+    - ansible_python_interpreter: "/usr/bin/env python3"
+    - ansible_become: yes
+  roles:
+    - role: wireguard

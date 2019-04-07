@@ -1,0 +1,16 @@
+[Interface]
+Address = {{ private_ip }}
+PrivateKey = {{ private_key }}
+ListenPort = 51820
+PostUp = iptables -A INPUT -p udp -m udp --dport 51820 -j ACCEPT
+PostDown = iptables -D INPUT -p udp -m udp --dport 51820 -j ACCEPT
+
+{% for item in groups['vps'] %}
+{% if item != inventory_hostname %}
+[Peer]
+PublicKey = {{ hostvars[item].public_key }}
+AllowedIps = {{ hostvars[item].private_ip }}/32
+Endpoint = {{ hostvars[item].ansible_host }}:51820
+
+{% endif %}
+{% endfor %}
