@@ -82,7 +82,14 @@
     owner: '{{ ssh_owner }}'
     group: '{{ ssh_group }}'
     validate: '/usr/sbin/sshd -T -f %s'
-  become: true
+
+- name: copy banner
+  copy:
+    src: 'ssh_banner.txt'
+    dest: '{{ ssh_banner_path }}'
+    mode: '0600'
+    owner: '{{ ssh_owner }}'
+    group: '{{ ssh_group }}'
 
 - name: Update .ssh/config file
   shell: >
