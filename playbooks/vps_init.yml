@@ -19,13 +19,14 @@
       when: ssh_user_pwd is null
   pre_tasks:
     - raw: >
-        test -e /usr/bin/python3.7 ||
-        (yum -y update && yum install gcc openssl-devel bzip2-devel &&
-        wget -P /usr/src https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz &&
-        tar xzf /usr/src/Python-3.7.2.tgz &&
-        pushd /usr/src &&
+        test -e $(which python3) ||
+        (yum -y update && yum install -y wget gcc openssl-devel bzip2-devel &&
+        wget -P /tmp https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz &&
+        tar -C /usr/src -xzf /tmp/Python-3.7.2.tgz &&
+        pushd /usr/src/Python-3.7.2 &&
         ./configure --enable-optimizations &&
-        make altinstall)
+        make altinstall &&
+        ln -s /usr/local/bin/python3.7 /usr/local/bin/python3)
       ignore_errors: true
     - name: Gathering Facts
       setup:
