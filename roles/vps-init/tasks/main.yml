@@ -14,13 +14,13 @@
 - name: include ssh setup tasks
   include_tasks: ssh.yml
 
-- name: restart sshd
-  debug:
-    msg: Restarting sshd
-  changed_when: true # or use meta
-  notify: restart sshd
-  ignore_errors: true
-  tags: reset
+# XXX: Hack to restart ssh without loosing connection
+- name: Restart sshd
+  service:
+    name={{ sshd_service_name }}
+    state=restarted
+  async: 1
+  poll: 0
 
 - name: Override ansible user/port after setting up sshd
   set_fact:
