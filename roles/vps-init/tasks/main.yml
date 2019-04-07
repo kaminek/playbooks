@@ -23,6 +23,17 @@
   when: ansible_distribution == "Ubuntu" and inventory_hostname in groups['scw']
   tags: min
 
+- name: Set hostname
+  hostname: name={{ inventory_hostname }}
+  when: not inventory_hostname is match('(\d{1,3}\.){3}\d{1,3}')
+  tags: hostname
+
+- name: Ensure persistent hostname
+  lineinfile:
+    dest=/etc/hostname
+    line="{{ ansible_hostname }}"
+  tags: hostname
+
 - name: include ssh setup tasks
   include_tasks: ssh.yml
   tags: ssh
