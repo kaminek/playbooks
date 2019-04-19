@@ -6,10 +6,10 @@ PostUp = iptables -A INPUT -p udp -m udp --dport {{ wireguard_udp_port }} -m con
 PostDown = iptables -D INPUT -p udp -m udp --dport {{ wireguard_udp_port }} -m conntrack --ctstate NEW -j ACCEPT
 
 {% for item in groups['wireguard-vpc'] %}
-	{% if item != inventory_hostname %}
+{% if item != inventory_hostname %}
 [Peer]
 PublicKey = {{ hostvars[item].public_key }}
 AllowedIps = {{ hostvars[item].private_ip }}/32
 Endpoint = {{ hostvars[item].ansible_host }}:{{ wireguard_udp_port }}
-	{% endif %}
+{% endif %}
 {% endfor %}

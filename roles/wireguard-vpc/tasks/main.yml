@@ -55,3 +55,9 @@
     name: "wg-quick@wg-vpc"
     enabled: yes
     state: restarted
+
+- name: Configuring priv DNS
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: '0755'

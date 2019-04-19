@@ -1,0 +1,7 @@
+{% for item in groups['wireguard-vpc'] %}
+{% if item == inventory_hostname %}
+127.0.0.1	localhost {{ inventory_hostname }}
+{% else %}
+{{ hostvars[item].private_ip }}	{{ item }}.priv
+{% endif %}
+{% endfor %}
