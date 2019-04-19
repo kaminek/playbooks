@@ -9,10 +9,6 @@
       private: yes
       confirm: yes
       when: root_pwd is null
-    - name: ssh_user_name
-      prompt: "Provide ssh user name"
-      private: no
-      when: ssh_user_name is null
     - name: ssh_user_pwd
       prompt: "Provide ssh user password"
       confirm: yes
