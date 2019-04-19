@@ -33,6 +33,14 @@
       update_cache: yes
   when: ansible_distribution == 'Ubuntu'
 
+- name: Install wireguard
+  apt:
+    pkg:
+      - wireguard
+      - wireguard-dkms
+    state: present
+  when: ansible_os_family == "Debian"
+
 - name: Enable net.ipv4.ip_forward
   sysctl:
     name: net.ipv4.ip_forward

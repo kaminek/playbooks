@@ -1,0 +1,57 @@
+---
+- name: Include preparation tasks
+  include_tasks: prepare.yml
+
+- name: Create wireguard keys directory
+  file:
+    path: "{{ wireguard_keys_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Check wireguard private key exists
+  stat:
+    path: "{{ wireguard_keys_dir }}/wg_vpc.priv"
+  register: wireguard_priv_key_file
+
+- name: Generate private keys
+  shell: "wg genkey > {{ wireguard_keys_dir }}/wg_vpc.priv"
+  when: not wireguard_priv_key_file.stat.exists
+
+- name: Get wireguard private key
+  slurp:
+    src: "{{ wireguard_keys_dir }}/wg_vpc.priv"
+  register:
+    wireguard_priv_key
+
+- set_fact:
+    private_key: "{{ wireguard_priv_key.content | b64decode }}"
+
+# annother method to get the key
+- name: Generate public keys
+  shell: echo "{{ private_key }}" | wg pubkey | tee "{{ wireguard_keys_dir }}"/wg_vpc.pub
+  register: wireguard_pub_key
+
+- set_fact:
+    public_key: "{{ wireguard_pub_key.stdout }}"
+
+- set_fact:
+    private_ip="{{ hostvars[inventory_hostname].private_ip }}"
+
+- name: Create wireguard directory
+  file:
+    path: /etc/wireguard
+    state: directory
+
+- name: Configuring wireguard
+  template:
+    src: wg.conf.j2
+    dest: /etc/wireguard/wg-vpc.conf
+    mode: '0600'
+
+- name: Starting wireguard
+  systemd:
+    name: "wg-quick@wg-vpc"
+    enabled: yes
+    state: restarted
