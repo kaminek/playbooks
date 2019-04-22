@@ -6,31 +6,38 @@
     enabled: no
     state: stopped
   when: ansible_distribution == "Fedora"
+  tags: firewall
 
 - name: Install iptables deps
   yum:
     name: [libselinux-python, iptables-services]
     state: present
+  tags: firewall
 
 - name: enable iptables saver service
   service:
     name: iptables
     enabled: yes
     state: started
+  tags: firewall
 
 - name: Copy iptables rules
   template:
     src: "{{ iptables_init }}.j2"
     dest: "/tmp/{{ iptables_init }}"
     mode: 0550
+  tags: firewall
 
 - name: Apply iptables rules
   shell: "/tmp/{{ iptables_init }}"
+  tags: firewall
 
 - name: save iptables rules
   shell: "service iptables save"
+  tags: firewall
 
 - name: Remove iptables rules file
   file:
     path: "/tmp/{{ iptables_init }}"
     state: absent
+  tags: firewall

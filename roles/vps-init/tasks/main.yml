@@ -45,6 +45,7 @@
     state=restarted
   async: 1
   poll: 0
+  tags: ssh
 
 - name: Override ansible user/port after setting up sshd
   set_fact:
@@ -59,3 +60,4 @@
     include_tasks: fail2ban.yml
     tags: fail2ban
   become: True
+  tags: always

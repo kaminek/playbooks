@@ -36,6 +36,7 @@
   file:
     path: "/home/{{ ssh_user_name }}/.ssh"
     state: directory
+  tags: user
 
 - name: move root authorized_keys to user authorized_keys
   copy:
@@ -54,9 +55,11 @@
   changed_when: false
   register: sshd_version
   check_mode: no
+  tags: ssh
 
 - name: include tasks to create crypo-vars
   include_tasks: crypto.yml
+  tags: ssh
 
 - name: create revoked_keys and set permissions to root/600
   template:
@@ -65,6 +68,7 @@
     mode: '0600'
     owner: '{{ ssh_owner }}'
     group: '{{ ssh_group }}'
+  tags: ssh
 
 - name: create sshd_config and set permissions to root/600
   template:
@@ -74,6 +78,7 @@
     owner: '{{ ssh_owner }}'
     group: '{{ ssh_group }}'
     validate: '/usr/sbin/sshd -T -f %s'
+  tags: ssh
 
 - name: Update .ssh/config file
   shell: >
@@ -83,5 +88,4 @@
   when: ssh_update_config_file
   delegate_to: localhost
   become: false
-  tags:
-    - dbg
+  tags: ssh
