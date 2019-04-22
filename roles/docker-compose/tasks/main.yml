@@ -1,0 +1,55 @@
+---
+# tasks file for roles/dotfiles
+
+- name: Set OS dependent variables
+  include_vars: '{{ item }}'
+  ignore_errors: true
+  with_first_found:
+   - '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_distribution }}.yml'
+   - '{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_os_family }}.yml'
+  tags: always
+
+- name: install deps
+  apt:
+    name: [apt-transport-https, ca-certificates, curl, software-properties-common]
+    state: present
+
+- name: Add Docker public PGP key to the APT keyring
+  apt_key:
+    id: "{{ docker_apt_key_id }}"
+    url: "{{ docker_apt_key_url }}"
+
+- name: Configure Docker's upstream APT repository
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    update_cache: true
+
+- name: Install Docker
+  apt:
+    name: [docker-ce, docker-ce-cli, containerd.io]
+    state: "present"
+
+- name: Check for existing Docker Compose file
+  stat:
+    path: "/usr/local/bin/docker-compose"
+  register: docker_compose_file
+
+- name: Remove Docker Compose if it's been installed
+  file:
+    path: "/usr/local/bin/docker-compose"
+    state: "absent"
+  when:
+    - docker_compose_file.stat.exists
+
+- name: Get docker compose script
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+    dest: "/usr/local/bin/docker-compose"
+    mode: 0755
+
+- name: Generate docker compose service
+  copy:
+    src: docker-compose.service
+    dest: /etc/systemd/system/docker-compose@.service
