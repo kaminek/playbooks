@@ -36,7 +36,7 @@
 
 - name: include ssh setup tasks
   include_tasks: ssh.yml
-  tags: ssh
+  tags: always
 
 # XXX: Hack to restart ssh without loosing connection
 - name: Restart sshd

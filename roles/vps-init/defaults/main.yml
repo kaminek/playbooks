@@ -111,14 +111,14 @@ ssh_authorized_principals_file: ''      # sshd
 #   - { path: '/etc/ssh/auth_principals/myuser', principals: [ 'masteradmin', 'webserver' ] }
 ssh_authorized_principals: []      # sshd
 
-# false to disable printing of the MOTD
+# false to disable printing of the MOTD since pam_motd is displaying it
 ssh_print_motd: false      # sshd
 
 # false to disable display of last login information
 ssh_print_last_log: false    # sshd
 
 # false to disable serving /etc/ssh/banner.txt before authentication is allowed
-ssh_banner: true # sshd
+ssh_banner: false # sshd
 ssh_banner_path: /etc/ssh/banner.txt # sshd
 
 # false to disable distribution version leakage during initial protocol handshake

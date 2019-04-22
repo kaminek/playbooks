@@ -77,8 +77,8 @@ MaxAuthTries {{ssh_max_auth_retries}}
 MaxSessions 10
 MaxStartups {{ssh_max_startups}}
 
-# Don't use PAM
-UsePAM no
+# Use PAM for pam_motd
+UsePAM yes
 
 # Enable public key authentication
 PubkeyAuthentication yes
