@@ -1,0 +1,17 @@
+---
+# defaults file for roles/dotfiles
+
+dotfiles:
+  - { src: '.bashrc', dest: '.bashrc' }
+  - { src: '.aliases', dest: '.aliases' }
+  - { src: '.vimrc', dest: '.vimrc' }
+  - { src: '.tmux.conf', dest: '.tmux.conf' }
+  - { src: '.dircolors', dest: '.dircolors' }
+dirty_motd_files:
+  - '/etc/motd.head'
+  - '/run/motd.dynamic'
+  - '/run/motd.dynamic.new'
+  - '/run/motd'
+  - '/var/run/motd.dynamic'
+  - '/var/run/motd.dynamic.new'
+  - '/var/run/motd'

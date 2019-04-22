@@ -1,0 +1,74 @@
+---
+# tasks file for roles/dotfiles
+
+- name: Set OS dependent variables
+  include_vars: '{{ item }}'
+  ignore_errors: true
+  with_first_found:
+   - '{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_distribution }}.yml'
+   - '{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml'
+   - '{{ ansible_os_family }}.yml'
+  tags: always
+
+- name: install deps
+  apt:
+    name: [coreutils, git, lolcat, cowsay, vim, tmux, fortune]
+    state: present
+
+- name: get dotfiles repos
+  git:
+    repo: 'https://github.com/kaminek/dotfiles.git'
+    dest: /root/.dotfiles
+
+- name: delete default dotfiles
+  file:
+    name: "/root/{{ item.dest }}"
+    state: absent
+  loop: "{{ dotfiles }}"
+
+- name: symlink dotfiles
+  file:
+    src: '/root/.dotfiles/{{ item.src }}'
+    dest: '/root/{{ item.dest }}'
+    state: link
+    force: yes
+  loop: "{{ dotfiles }}"
+
+- name: install update-motd
+  apt:
+    name: update-motd
+    state: present
+  when: ansible_distribution == "Ubuntu"
+  tags: motd
+
+- name: Create mtod directory
+  file:
+    path: /etc/update-motd.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  tags: motd
+
+- name: Clear mtod directory
+  file:
+    path: /etc/update-motd.d/
+    state: absent
+  tags: motd
+
+- name: Delete previous motd files
+  file:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ dirty_motd_files }}"
+  tags: motd
+
+- name: Copy mtod scripts
+  copy:
+    src: motd/
+    dest: /etc/update-motd.d
+    owner: root
+    group: root
+    mode: 0755
+  tags: motd

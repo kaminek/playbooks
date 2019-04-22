@@ -1,0 +1,10 @@
+---
+# handlers file for roles
+
+- name: Include Redhat handler
+  include_tasks: redhat.yml
+  when: ansible_distribution == "RedHat"
+
+- name: Include Debian handler
+  include_tasks: debian.yml
+  when: ansible_distribution == "Debian"
